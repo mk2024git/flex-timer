@@ -1,0 +1,185 @@
+/* Reset some default browser styles */
+body,
+h2,
+input,
+button {
+    margin: 0;
+    padding: 0;
+}
+
+/* Body styling */
+body {
+    background: linear-gradient(
+        135deg,
+        #ff7e5f,
+        #fd3a69
+    ); /* Default to work session colors */
+    font-family: "Arial", sans-serif;
+    color: #333;
+    text-align: center;
+    transition: background 0.5s;
+}
+
+body.work-session {
+    background: linear-gradient(
+        135deg,
+        #ff7e5f,
+        #fd3a69
+    ); /* Warm colors for work session */
+}
+
+body.break-session {
+    background: linear-gradient(
+        135deg,
+        #43c6ac,
+        #191654
+    ); /* Cool colors for break session */
+}
+
+/* Header styling */
+header {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#authLinks {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+#authLinks a {
+    margin: 0 10px;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#authLinks a:hover {
+    text-decoration: underline;
+}
+
+/* Timer styling */
+#timer {
+    margin: 20px auto;
+    max-width: 400px;
+}
+
+#timeCircle {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#timeDisplay {
+    font-size: 48px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.bi {
+    font-size: 24px;
+}
+
+/* Tasks styling */
+#tasks {
+    margin: 20px auto;
+    max-width: 600px;
+    text-align: left;
+}
+
+#tasks h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+#taskForm {
+    display: flex;
+}
+
+#taskInput {
+    flex: 1;
+    padding: 30px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+}
+
+#taskForm button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 0 4px 4px 0;
+    background: #007bff;
+    color: #fff;
+}
+
+#taskList {
+    list-style: none;
+    margin-top: 20px;
+    padding: 0;
+}
+
+#taskList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#taskList li span {
+    flex: 1;
+}
+
+#taskList li button {
+    background: none;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* YouTube music controls */
+#youtubeMusic {
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+#youtubePlayer {
+    border: none;
+}
+
+#controls button {
+    margin: 5px;
+}
+
+/* Modal styling */
+.modal-content {
+    text-align: left;
+}
+
+/* Large input and select elements in the modal */
+.modal-body {
+    font-size: 1.25rem;
+    padding: 1rem;
+}
+
+.drag-handle {
+    cursor: grab;
+    margin-right: 10px;
+}
+.drag-handle i {
+    font-size: 1.2rem;
+    color: #333;
+}
