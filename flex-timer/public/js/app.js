@@ -1,3 +1,5 @@
+/* eslint-env jquery */
+/* global $ */
 document.addEventListener("DOMContentLoaded", function() {
     let timer;
     let isRunning = false;
@@ -272,13 +274,12 @@ document.addEventListener("DOMContentLoaded", function() {
     new Sortable(taskList, {
         animation: 150,
         handle: '.drag-handle', // ドラッグハンドルを指定
-        onEnd: function(evt) {
+        onEnd: function() {
             updateCurrentTask();
         }
     });
 
     // YouTube Player API
-    let player;
 
     window.onYouTubeIframeAPIReady = function() {
         player = new YT.Player('youtubePlayer', {
