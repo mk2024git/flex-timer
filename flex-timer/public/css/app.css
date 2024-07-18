@@ -89,6 +89,14 @@ header {
 }
 
 /* Tasks styling */
+#currentTaskDisplay {
+    margin: 20px auto;
+    max-width: 600px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
 #tasks {
     margin: 20px auto;
     max-width: 600px;
