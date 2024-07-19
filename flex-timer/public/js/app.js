@@ -1,3 +1,5 @@
+/* eslint-env jquery */
+/* global $ */
 document.addEventListener("DOMContentLoaded", function() {
     let timer;
     let isRunning = false;
@@ -6,7 +8,8 @@ document.addEventListener("DOMContentLoaded", function() {
     let timeLeft = workTime;
     let isWorkSession = true; // To track if it's work or break
     let currentTask = null;
-    let endSound = new Audio("alarm1.mp3");
+    let endSound = new Audio();
+    let volume = 0.5;
 
     const timeDisplay = document.getElementById('timeDisplay');
     const timeCircle = document.getElementById('timeCircle');
@@ -18,7 +21,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const currentTaskDisplay = document.getElementById('currentTaskDisplay');
     const settingsButton = document.getElementById('settingsButton');
     const saveSettingsButton = document.getElementById('saveSettingsButton');
+    const testSoundButton = document.getElementById('testSoundButton');
+    const volumeControl = document.getElementById('volumeControl');
+    const endSoundSelect = document.getElementById('endSound');
 
+    refreshPomodoroSettings();
     function updateTimeDisplay() {
         const minutes = Math.floor(timeLeft / 60);
         const seconds = timeLeft % 60;
@@ -78,13 +85,40 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function saveSettings() {
+        $.ajax({
+            url: '/pomodoro_setting',
+            type: 'POST',
+            data: {
+                duration: parseInt(document.getElementById('workTime').value, 10),
+                break_duration: parseInt(document.getElementById('breakTime').value, 10),
+                alarm_path: document.getElementById('endSound').value,
+                alarm_volume: volumeControl.value,
+                '_token': $('meta[name="csrf-token"]').attr('content') // CSRFトークンの取得
+            },
+            success: function(response, textStatus, xhr) {
+                console.log(response);
+                if (xhr.status === 200) { // ステータスコードが200の場合に後続の処理を実行
+                    refreshPomodoroSettings();
+                    $('#settingsModal').modal('hide');
+                    location.reload();
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', status, error);
+            }
+        });
+    }
+
+    function refreshPomodoroSettings() {
         const workMinutes = parseInt(document.getElementById('workTime').value, 10);
         const breakMinutes = parseInt(document.getElementById('breakTime').value, 10);
         const selectedSound = document.getElementById('endSound').value;
 
         workTime = workMinutes * 60;
         breakTime = breakMinutes * 60;
-        endSound.src = selectedSound;
+
+        endSound = new Audio(selectedSound);
+        endSound.volume = volume
 
         if (isWorkSession) {
             timeLeft = workTime;
@@ -93,10 +127,29 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         updateTimeDisplay();
-        $('#settingsModal').modal('hide');
     }
 
+    endSoundSelect.addEventListener('change', function() {
+        const selectedSound = endSoundSelect.value;
+        endSound.src = selectedSound;
+        endSound.volume = volume;
+    });
+
+    testSoundButton.addEventListener('click', function() {
+        const selectedSound = endSoundSelect.value;
+        endSound.src = selectedSound;
+        endSound.play();
+    });
+
+    volumeControl.addEventListener('input', function() {
+        volume = volumeControl.value / 100;
+        endSound.volume = volume;
+    });
+
     timeCircle.addEventListener('click', function() {
+        endSound = new Audio("/audio/alarm1.mp3");
+        const selectedSound = document.getElementById('endSound').value;
+        endSound.src = selectedSound;
         if (isRunning) {
             stopTimer();
         } else {
@@ -221,13 +274,12 @@ document.addEventListener("DOMContentLoaded", function() {
     new Sortable(taskList, {
         animation: 150,
         handle: '.drag-handle', // ドラッグハンドルを指定
-        onEnd: function(evt) {
+        onEnd: function() {
             updateCurrentTask();
         }
     });
 
     // YouTube Player API
-    let player;
 
     window.onYouTubeIframeAPIReady = function() {
         player = new YT.Player('youtubePlayer', {

@@ -99,20 +99,25 @@
                     <form id="settingsForm">
                         <div class="form-group">
                             <label for="workTime">Work Time (minutes)</label>
-                            <input type="number" id="workTime" class="form-control form-control-lg" min="1" max="60" value="25">
+                            <input type="number" id="workTime" class="form-control form-control-lg" min="1" max="60" value="{{ $pomodoro_setting->duration ?? '25' }}">
                         </div>
                         <div class="form-group">
                             <label for="breakTime">Break Time (minutes)</label>
-                            <input type="number" id="breakTime" class="form-control form-control-lg" min="1" max="30" value="5">
+                            <input type="number" id="breakTime" class="form-control form-control-lg" min="1" max="30" value="{{ $pomodoro_setting->break_duration ?? '5' }}">
                         </div>
                         <div class="form-group">
                             <label for="endSound">End Sound</label>
                             <select id="endSound" class="form-control form-control-lg">
-                                <option value="alarm1.mp3">Alarm 1</option>
-                                <option value="alarm2.mp3">Alarm 2</option>
-                                <option value="alarm3.mp3">Alarm 3</option>
+                                @for($i=1; $i<=3; $i++)
+                                    <option value="/audio/alarm{{ $i }}.mp3" @if(($pomodoro_setting->alarm_path ?? '') == '/audio/alarm'.$i.'.mp3') selected @endif>Alarm {{ $i }} </option>
+                               @endfor
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="volumeControl">Volume Control</label>
+                            <input type="range" id="volumeControl" class="form-control" min="0" max="100" value="{{ $pomodoro_setting->alarm_volume ?? '50' }}">
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-lg btn-block" id="testSoundButton">Test Sound</button>
                         <button type="button" class="btn btn-primary btn-lg btn-block" id="saveSettingsButton">Save</button>
                     </form>
                 </div>

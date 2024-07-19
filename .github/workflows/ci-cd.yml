@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+defaults:
+  run:
+    working-directory: flex-timer
+
 jobs:
   lint:
     runs-on: ubuntu-latest

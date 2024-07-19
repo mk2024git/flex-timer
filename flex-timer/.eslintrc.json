@@ -1,0 +1,8 @@
+{
+    "extends": ["eslint:recommended"],
+    "plugins": ["jquery"],
+    "parserOptions": {},
+    "env": { "browser": true, "jquery": true, "es6": true, "commonjs": true },
+    "globals": { "$": true },
+    "rules": {}
+}
