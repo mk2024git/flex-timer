@@ -1,12 +1,12 @@
 /* eslint-env jquery */
-/* global $ */
+/* global $, Sortable, YT */
 document.addEventListener("DOMContentLoaded", function() {
     let timer;
     let isRunning = false;
-    let workTime = 25 * 60; // Default 25 minutes in seconds
-    let breakTime = 5 * 60; // Default 5 minutes in seconds
+    let workTime = 25 * 60; // デフォルトの25分（秒単位）
+    let breakTime = 5 * 60; // デフォルトの5分（秒単位）
     let timeLeft = workTime;
-    let isWorkSession = true; // To track if it's work or break
+    let isWorkSession = true; // 仕事セッションか休憩セッションかを追跡する
     let currentTask = null;
     let endSound = new Audio();
     let volume = 0.5;
@@ -37,20 +37,20 @@ document.addEventListener("DOMContentLoaded", function() {
             if (timeLeft <= 0) {
                 clearInterval(timer);
                 isRunning = false;
-                endSound.play(); // Play the selected alarm sound
-                // Switch between work and break sessions
+                endSound.play(); // 選択されたアラーム音を再生
+                // 仕事セッションと休憩セッションを切り替える
                 if (isWorkSession) {
                     timeLeft = breakTime;
                     timeDisplay.textContent = `${Math.floor(breakTime / 60)}:00`;
                     isWorkSession = false;
-                    toggleIcon.className = 'bi bi-person-workspace'; // Change icon to work icon
+                    toggleIcon.className = 'bi bi-person-workspace'; // アイコンを仕事用アイコンに変更
                     document.body.classList.remove('work-session');
                     document.body.classList.add('break-session');
                 } else {
                     timeLeft = workTime;
                     timeDisplay.textContent = `${Math.floor(workTime / 60)}:00`;
                     isWorkSession = true;
-                    toggleIcon.className = 'bi bi-cup-fill'; // Change icon to break icon
+                    toggleIcon.className = 'bi bi-cup-fill'; // アイコンを休憩用アイコンに変更
                     document.body.classList.remove('break-session');
                     document.body.classList.add('work-session');
                 }
@@ -60,20 +60,20 @@ document.addEventListener("DOMContentLoaded", function() {
             updateTimeDisplay();
         }, 1000);
         isRunning = true;
-        //toggleIcon.className = 'bi bi-pause-fill'; // Remove icon change when timer starts
+        //toggleIcon.className = 'bi bi-pause-fill'; // タイマー開始時のアイコン変更を削除
     }
 
     function stopTimer() {
         clearInterval(timer);
         isRunning = false;
-        toggleIcon.className = isWorkSession ? 'bi bi-cup-fill' : 'bi bi-person-workspace'; // Keep icon based on session type
+        toggleIcon.className = isWorkSession ? 'bi bi-cup-fill' : 'bi bi-person-workspace'; // セッションタイプに基づいてアイコンを保持
     }
 
     function resetTimer() {
         stopTimer();
         timeLeft = isWorkSession ? workTime : breakTime;
         updateTimeDisplay();
-        toggleIcon.className = isWorkSession ? 'bi bi-cup-fill' : 'bi bi-person-workspace'; // Reset icon based on session type
+        toggleIcon.className = isWorkSession ? 'bi bi-cup-fill' : 'bi bi-person-workspace'; // セッションタイプに基づいてアイコンをリセット
     }
 
     function toggleSession() {
@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
     saveSettingsButton.addEventListener('click', saveSettings);
 
-    // Task management functions
+    // タスク管理機能
     function addTask() {
         const taskText = taskInput.value.trim();
         if (taskText === "") {
@@ -199,7 +199,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function updateCurrentTask() {
         const firstTask = taskList.querySelector('li');
         currentTask = firstTask ? firstTask.textContent : null;
-        currentTaskDisplay.textContent = currentTask ? `Current Task: ${currentTask}` : 'No current task';
+        currentTaskDisplay.textContent = currentTask ? `現在のタスク: ${currentTask}` : '現在のタスクなし';
     }
 
     function addTaskHandler(task_title, task_status, task_id) {
@@ -219,8 +219,8 @@ document.addEventListener("DOMContentLoaded", function() {
         deleteButton.innerHTML = '<i class="bi bi-x"></i>';
         deleteButton.addEventListener('click', function() {
             $.ajax({
-                url: '/task/destroy',
-                type: 'POST',
+                url: `/task/delete/${task_id}`,
+                type: 'DELETE',
                 data: {
                     task_id: task_id,
                     '_token': $('meta[name="csrf-token"]').attr('content') // CSRFトークンの取得
@@ -266,11 +266,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     getTasks();
 
-    // Initialize display
+    // 表示を初期化
     updateTimeDisplay();
     updateCurrentTask();
 
-    // Make the task list sortable with drag handles
+    // ドラッグハンドルでタスクリストを並べ替え可能にする
     new Sortable(taskList, {
         animation: 150,
         handle: '.drag-handle', // ドラッグハンドルを指定
@@ -279,10 +279,11 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // YouTube Player API
+    // YouTube プレーヤーAPI
+    let playerInstance; // プレイヤーをグローバルに宣言
 
     window.onYouTubeIframeAPIReady = function() {
-        player = new YT.Player('youtubePlayer', {
+        playerInstance = new YT.Player('youtubePlayer', {
             events: {
                 'onReady': onPlayerReady
             }
@@ -312,6 +313,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Set initial background color
+    // 初期の背景色を設定
     document.body.classList.add('work-session');
 });
