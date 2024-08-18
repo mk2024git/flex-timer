@@ -202,9 +202,41 @@ document.addEventListener("DOMContentLoaded", function() {
         currentTaskDisplay.textContent = currentTask ? `現在のタスク: ${currentTask}` : '現在のタスクなし';
     }
 
+    function updateTaskSorting(){
+        const tasks = taskList.querySelectorAll('li');
+        let task_ids = [];
+        tasks.forEach((e)=>{
+            //console.log(e.dataset.taskid);
+            task_ids.push(e.dataset.taskid);
+
+        });
+
+        $.ajax({
+            url: '/task/updateTaskSortOrder',
+            type: 'POST',
+            data: {
+                task_sort_orders: task_ids,
+                '_token': $('meta[name="csrf-token"]').attr('content') // CSRFトークンの取得
+            },
+            success: function(response, textStatus, xhr) {
+                console.log(response);
+                if (xhr.status === 200) { // ステータスコードが200の場合に後続の処理を実行
+
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', status, error);
+            }
+        });
+
+    }
+
+
+
     function addTaskHandler(task_title, task_status, task_id) {
         const listItem = document.createElement('li');
         listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+        listItem.dataset.taskid = task_id;
 
         // ドラッグハンドル
         const dragHandle = document.createElement('span');
@@ -276,6 +308,7 @@ document.addEventListener("DOMContentLoaded", function() {
         handle: '.drag-handle', // ドラッグハンドルを指定
         onEnd: function() {
             updateCurrentTask();
+            updateTaskSorting();
         }
     });
 
