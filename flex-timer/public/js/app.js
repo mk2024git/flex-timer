@@ -219,8 +219,8 @@ document.addEventListener("DOMContentLoaded", function() {
         deleteButton.innerHTML = '<i class="bi bi-x"></i>';
         deleteButton.addEventListener('click', function() {
             $.ajax({
-                url: `/task/delete/${task_id}`,
-                type: 'DELETE',
+                url: `/task/destroy`,
+                type: 'POST',
                 data: {
                     task_id: task_id,
                     '_token': $('meta[name="csrf-token"]').attr('content') // CSRFトークンの取得
