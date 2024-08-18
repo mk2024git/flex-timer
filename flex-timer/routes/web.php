@@ -11,6 +11,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::post('/task/create', [TaskController::class, 'create'])->name('task.create');
 Route::get('/task/index', [TaskController::class, 'index'])->name('task.index');
 Route::post('/task/destroy', [TaskController::class, 'destroy'])->name('task.destroy');
+Route::post('/task/updateTaskSortOrder', [TaskController::class, 'updateTaskSortOrder'])->name('task.updateTaskSortOrder');
 Route::post('/pomodoro_setting', [PomodoroSettingController::class, 'save'])->name('pomodoro_setting.save');
 
 // デフォルトのルートをホームページにリダイレクト
