@@ -40,7 +40,9 @@ jobs:
           php-version: "8.0"
 
       - name: Install Composer dependencies
-        run: composer install --no-dev --prefer-dist --optimize-autoloader
+        run: |
+          cd flex-timer
+          composer install --no-dev --prefer-dist --optimize-autoloader
 
       - name: Deploy to EC2
         env:
