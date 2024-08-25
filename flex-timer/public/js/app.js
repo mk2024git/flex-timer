@@ -341,9 +341,23 @@ document.addEventListener("DOMContentLoaded", function() {
 
         document.getElementById('playlistForm').addEventListener('submit', function(event) {
             event.preventDefault();
-            const playlistId = document.getElementById('playlistInput').value;
-            player.loadPlaylist({list: playlistId, listType: 'playlist'});
+            const playlistUrl = document.getElementById('playlistInput').value;
+
+            // URLからプレイリストIDを抽出
+            const playlistId = extractPlaylistId(playlistUrl);
+
+            if (playlistId) {
+                player.loadPlaylist({list: playlistId, listType: 'playlist'});
+            } else {
+                console.error('無効なプレイリストURLです');
+            }
         });
+
+        function extractPlaylistId(url) {
+            const regex = /[?&]list=([^&]+)/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
     }
 
     // 初期の背景色を設定
